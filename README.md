@@ -1,27 +1,30 @@
 # battlesnake_crystal
 
-TODO: Write a description here
+Battlesnake 2018 written in Crystal because why not.
+
 
 ## Installation
 
-TODO: Write installation instructions here
+Install Crystal off the website or just use:
+
+```
+brew update
+brew install crystal-lang
+```
+
+Then to install deps run:
+
+`crystal deps`
+
 
 ## Usage
 
-TODO: Write usage instructions here
+To run the server, run:
 
-## Development
+`crystal server.rb`
 
-TODO: Write development instructions here
+## Issues
 
-## Contributing
+If you run into a libssl issue, try:
+`https://github.com/crystal-lang/crystal/issues/4745#issuecomment-332553374`
 
-1. Fork it ( https://github.com/[your-github-name]/battlesnake_crystal/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create a new Pull Request
-
-## Contributors
-
-- [[your-github-name]](https://github.com/[your-github-name]) Nathan Willson - creator, maintainer
