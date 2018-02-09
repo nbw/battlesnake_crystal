@@ -1,0 +1,13 @@
+name: battlesnake_crystal
+version: 0.1.0
+
+authors:
+  - Nathan Willson <willson.b.nathan@gmail.com>
+
+targets:
+  battlesnake_crystal:
+    main: src/battlesnake_crystal.cr
+
+crystal: 0.24.1
+
+license: MIT
