@@ -21,7 +21,7 @@ Then to install deps run:
 
 To run the server, run:
 
-`crystal server.rb`
+`crystal src/battlesnake_crystal.cr`
 
 ## Issues
 
