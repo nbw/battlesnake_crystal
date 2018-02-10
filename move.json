@@ -1,0 +1,104 @@
+{
+  "you": 
+  {
+    "taunt": "", 
+    "object": "snake", 
+    "name": "AppColony", 
+    "length": 3, 
+    "id": "7433f0fe-cdb8-46e1-9b3b-a4a43d483579", 
+    "health": 100, 
+    "body": {
+      "object": "list", 
+      "data": [
+        {
+          "y": 14, 
+          "x": 8, 
+          "object": "point"
+        }, 
+        {
+          "y": 14, 
+          "x": 8, 
+          "object": "point"
+        }, 
+        {
+          "y": 14, 
+          "x": 8, 
+          "object": "point"
+        }
+      ]
+    }
+  }, 
+  "width": 20, 
+  "turn": 0, 
+  "snakes": {
+    "object": "list", 
+    "data": [
+      {"taunt": "", 
+        "object": "snake", 
+        "name": "AppColony", 
+        "length": 3, 
+        "id": "7433f0fe-cdb8-46e1-9b3b-a4a43d483579", 
+        "health": 100, 
+        "body": {
+          "object": "list", 
+          "data": [
+            {
+              "y": 14, 
+              "x": 8, 
+              "object": "point"
+            }, 
+            {
+              "y": 14, 
+              "x": 8, 
+              "object": "point"
+            }, 
+            {
+              "y": 14, 
+              "x": 8, 
+              "object": "point"
+            }
+          ]
+        }
+      }, 
+      {
+        "taunt": "ゴロゴロ", 
+        "object": "snake", 
+        "name": "Ereptile Disruption", 
+        "length": 3, 
+        "id": "2ecec540-83dd-4f18-9214-9dedd12e0398", 
+        "health": 100, 
+        "body": {
+          "object": "list", 
+          "data": [
+            {"y": 7, 
+              "x": 12, 
+              "object": "point"
+            }, 
+            {"y": 7, 
+              "x": 12, 
+              "object": "point"
+            }, 
+            {"y": 7, 
+              "x": 12, 
+              "object": "point"
+            }
+          ]
+        }
+      }
+    ]
+  }, 
+  "object": "world", 
+  "id": 8, 
+  "height": 20, 
+  "food": {
+    "object": "list", 
+    "data": [
+      {
+        "y": 12, 
+        "x": 15, 
+        "object": "point"
+      }
+    ]
+  }
+}
+
