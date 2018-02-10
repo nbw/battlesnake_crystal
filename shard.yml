@@ -6,7 +6,7 @@ authors:
 
 targets:
   battlesnake_crystal:
-    main: src/server.cr
+    main: src/battlesnake_crystal.cr
 
 crystal: 0.24.1
 

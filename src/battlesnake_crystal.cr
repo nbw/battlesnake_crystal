@@ -1,6 +1,8 @@
 require "./battlesnake_crystal/*"
+require "kemal"
 
-# TODO: Write documentation for `BattlesnakeCrystal`
-module BattlesnakeCrystal
-  # TODO: Put your code here
+get "/" do
+  "Hello World!"
 end
+
+Kemal.run
