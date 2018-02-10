@@ -13,5 +13,8 @@ crystal: 0.24.1
 license: MIT
 
 dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
+    branch: master
   kemal:
     github: kemalcr/kemal

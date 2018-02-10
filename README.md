@@ -19,9 +19,20 @@ Then to install deps run:
 
 ## Usage
 
-To run the server, run:
+For hotcode reloading, install sentry:
+[sentry](https://github.com/samueleaton/sentry)
+
+Then call: `./sentry` from the project directory to run it with hot reloading.
+
+Otherwise, to run the server, run:
 
 `crystal src/battlesnake_crystal.cr`
+
+## Battlesnake stuff:
+
+There is an example start request in: start.json
+
+There is an example move request in: move.json
 
 ## Issues
 
