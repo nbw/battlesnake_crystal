@@ -89,7 +89,7 @@
   }, 
   "object": "world", 
   "id": 8, 
-  "height": 20, 
+  "height": 25, 
   "food": {
     "object": "list", 
     "data": [

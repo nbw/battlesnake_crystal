@@ -1,2 +1,4 @@
 require "spec"
-require "../src/battlesnake_crystal"
+require "spec-kemal"
+# require "../src/battlesnake_crystal"
+require "../src/api_parser"
