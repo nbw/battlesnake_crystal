@@ -8,9 +8,25 @@ class Grid
     @parser = BattlesnakeAPI.from_json(body)
 
     @grid = [] of Array(GridPoint)
+    @snake_heads = [] of GridPoint
+
     generate
   end
 
+  # Return the grid
+  def grid
+    @grid
+  end
+
+  # Return the snake_heads
+  def grid
+    @snake_heads
+  end
+
+  # Generate a grid
+  # 1. create a blank grid
+  # 2. add food to the grid
+  # 3. add snakes to the grid
   def generate
     make_blank_grid()
     add_food_to_grid()
@@ -18,6 +34,7 @@ class Grid
     print
   end
 
+  # Print the grid (used for dev purposes)
   def print
     return if @grid.empty?
 
@@ -49,6 +66,15 @@ class Grid
         GridPoint.new()
       }
     }
+    add_coords_to_grid()
+  end
+
+  private def add_coords_to_grid
+    @grid.each_with_index do |row, x_index|
+      row.each_with_index do |column, y_index|
+        @grid[x_index][y_index].set_coord(x_index, y_index)
+      end
+    end
   end
 
   private def add_food_to_grid
@@ -68,16 +94,20 @@ class Grid
         @grid[point.x][point.y].content_id = i
       end
 
+      # mark and record heads
       head = body.first
       @grid[head.x][head.y].content = SNAKE_HEAD
+      @snake_heads.push(@grid[head.x][head.y])
     end
   end
 end
 
 class GridPoint
-  def initialize( content : String = "empty", content_id : Int32 = -1)
+  def initialize(content : String = "empty", content_id : Int32 = -1)
     @content = content
     @content_id = content_id
+    @x = 0
+    @y = 0
   end
 
   def content
@@ -94,5 +124,10 @@ class GridPoint
 
   def content_id=( i : Int32)
     @content_id = i
+  end
+
+  def set_coord(x : Int32, y : Int32)
+    @x = x
+    @y = y
   end
 end
