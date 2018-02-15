@@ -1,4 +1,5 @@
 require "./grid"
+require "./voronoi"
 
 class World
   # Responsible for creating the world and returning a move direction
@@ -8,6 +9,8 @@ class World
   end
 
   def calculate
+    vor = Voronoi.new(@grid)
+    vor.process
     "left"
   end
 end

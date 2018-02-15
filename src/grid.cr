@@ -1,26 +1,15 @@
 class Grid
 
+  EMPTY = "empty"
   FOOD = "food"
   SNAKE = "snake"
   SNAKE_HEAD = "snake_head"
 
   def initialize(body : String)
     @parser = BattlesnakeAPI.from_json(body)
-
     @grid = [] of Array(GridPoint)
-    @snake_heads = [] of GridPoint
 
     generate
-  end
-
-  # Return the grid
-  def grid
-    @grid
-  end
-
-  # Return the snake_heads
-  def grid
-    @snake_heads
   end
 
   # Generate a grid
@@ -38,16 +27,16 @@ class Grid
   def print
     return if @grid.empty?
 
-    @parser.height.times do |y|
+    height.times do |y|
       str = String.build do |s|
-        @parser.width.times do |x|
+        width.times do |x|
           case @grid[x][y].content 
           when SNAKE
-            s << " ◦ "
+            s << " ◦ ".colorize(:yellow)
           when SNAKE_HEAD
-            s << " @ "
+            s << " @ ".colorize(:yellow)
           when FOOD
-            s << " ♥ "
+            s << " ♥ ".colorize(:red)
           else
             s << " · "
           end
@@ -57,12 +46,43 @@ class Grid
     end
   end
 
-  # Makes template grid filled with zeros
+  def empty_point?(x, y)
+    case
+    when (x < 0), (x > width-1) # check x bounds
+      false
+    when (y < 0), (y > height-1) # check y bounds
+      false
+    when (@grid[x][y].content == SNAKE), (@grid[x][y].content == SNAKE_HEAD) # check if snake
+      false
+    else
+      true
+    end
+  end
+
+  # %%%%% BEGIN: Accessor methods %%%%%%
+
+  # Return the grid
+  def grid
+    @grid
+  end
+
+  def width 
+    @parser.width
+  end
+
+  def height 
+    @parser.height
+  end
+
+  # %%%%% END: Accessor methods %%%%%%
+
+
+  # Makes template grid
   #
   # @return Array[x][y]
   private def make_blank_grid
-    @grid = Array.new(@parser.width){
-      Array(GridPoint).new(@parser.height){
+    @grid = Array.new(width){
+      Array(GridPoint).new(height){
         GridPoint.new()
       }
     }
@@ -97,17 +117,25 @@ class Grid
       # mark and record heads
       head = body.first
       @grid[head.x][head.y].content = SNAKE_HEAD
-      @snake_heads.push(@grid[head.x][head.y])
     end
   end
 end
 
 class GridPoint
-  def initialize(content : String = "empty", content_id : Int32 = -1)
+
+  def initialize(content : String = Grid::EMPTY, content_id : Int32 = -1)
     @content = content
     @content_id = content_id
     @x = 0
     @y = 0
+  end
+
+  def x
+    @x
+  end
+
+  def y
+    @y
   end
 
   def content
@@ -129,5 +157,13 @@ class GridPoint
   def set_coord(x : Int32, y : Int32)
     @x = x
     @y = y
+  end
+
+  def empty?
+    content == Grid::EMPTY
+  end
+  
+  def food?
+    content == Grid::FOOD
   end
 end

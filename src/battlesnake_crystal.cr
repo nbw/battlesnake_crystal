@@ -1,5 +1,6 @@
 require "kemal"
 require "json"
+require "colorize"
 require "./*"
 
 get "/" do
