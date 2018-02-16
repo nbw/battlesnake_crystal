@@ -122,36 +122,16 @@ class Grid
 end
 
 class GridPoint
+  property x : Int32
+  property y : Int32
+  property content : String
+  property content_id : Int32
 
   def initialize(content : String = Grid::EMPTY, content_id : Int32 = -1)
     @content = content
     @content_id = content_id
     @x = 0
     @y = 0
-  end
-
-  def x
-    @x
-  end
-
-  def y
-    @y
-  end
-
-  def content
-    @content
-  end
-
-  def content=(c : String)
-    @content = c
-  end
-
-  def content_id
-    @content_id
-  end
-
-  def content_id=( i : Int32)
-    @content_id = i
   end
 
   def set_coord(x : Int32, y : Int32)
@@ -165,5 +145,9 @@ class GridPoint
   
   def food?
     content == Grid::FOOD
+  end
+
+  def snake?
+    (content == Grid::SNAKE) || (content == Grid::SNAKE_HEAD)
   end
 end

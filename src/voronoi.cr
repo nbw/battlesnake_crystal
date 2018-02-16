@@ -9,13 +9,24 @@ class Voronoi
     @grid_obj    = grid
     @vor_grid    = [] of Array(VoronoiPoint)
     @snake_heads = [] of VoronoiPoint
+    @sections = Hash(Int32, Int32).new
   end
 
   def process
-    # snake_heads = snake
     make_grid()
     flood_grid()
+    calculate_sections()
     print
+  end
+
+  def calculate_sections
+    @snake_heads.each do |snake|
+      owner_id = snake.owner_id
+      @sections[owner_id] = area_of_owner(owner_id)
+    end
+
+    # record area of intersection points
+    @sections[-1] = area_of_owner(-1)
   end
 
   # Looks for points with a step value
@@ -28,7 +39,7 @@ class Voronoi
       # are empty or food. 
       points = @vor_grid.flat_map do |row| 
         row.select{ |point|
-          (point.steps == step) && (point.empty? || point.food?)
+          (point.steps == step) && (point.empty? || point.food?) && !point.intersection
         }
       end
     end
@@ -100,12 +111,13 @@ class Voronoi
           when Grid::SNAKE_HEAD
             s << "  @  ".colorize(:yellow)
           else
+            owner = point.owner_id
             step = point.steps
 
             if(point.intersection)
               color = :white
             else
-              color = colors[(step % colors.size)]
+              color = colors[(owner % colors.size)]
             end
 
             if step < 10
@@ -121,7 +133,7 @@ class Voronoi
   end
 
   # checks if the grid still has unvisited "empty" points
-  def are_there_unvisited_points?
+  private def are_there_unvisited_points?
       unvisited_points = @vor_grid.flat_map do |row| 
         row.select{ |point|
           point.unvisited? && (point.empty? || point.food?)
@@ -154,6 +166,16 @@ class Voronoi
       @vor_grid << vol_column 
     end
   end
+
+  # returns the number of points belonging
+  # to an owner_id
+  private def area_of_owner(owner_id)
+      owners_points = @vor_grid.flat_map do |row| 
+        row.select{|point| point.owner_id == owner_id}
+      end
+
+      owners_points.size
+  end
 end
 
 
@@ -176,11 +198,7 @@ class VoronoiPoint
     @status = status
     @steps  = 0
     @intersection  = false
-    @owner_id  = -1
-  end
-
-  def steps
-    @steps
+    @owner_id  = determine_owner
   end
 
   def mark_visited!(steps, owner_id)
@@ -195,6 +213,15 @@ class VoronoiPoint
 
   def unvisited?
     @status != VISITED
+  end
+
+  private def determine_owner
+    content_id = @point.content_id
+    if (content_id >= 0)
+      content_id
+    else
+      -1
+    end
   end
 
 end
