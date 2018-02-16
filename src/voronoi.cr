@@ -30,7 +30,7 @@ class Voronoi
   end
 
   # Looks for points with a step value
-  # and explores their neightbour points
+  # and explores their neighbour points
   def flood_grid(step : Int32 = 0)
     if (step == 0) 
       points = @snake_heads
@@ -75,7 +75,7 @@ class Voronoi
             (possible_point.steps == new_step_val)
           )
           possible_point.intersection = true
-          possible_point.owner_id = -1
+          possible_point.owner_id = VoronoiPoint::INTERSECTION
           
         # else if the point hasn't been visted, mark it
         elsif(!possible_point.visited?)
@@ -116,6 +116,8 @@ class Voronoi
 
             if(point.intersection)
               color = :white
+            elsif owner < 0
+              color = :black
             else
               color = colors[(owner % colors.size)]
             end
@@ -132,15 +134,32 @@ class Voronoi
     end
   end
 
-  # checks if the grid still has unvisited "empty" points
+  # checks if the grid still has unvisited "empty" spots
+  # 1. Needs to be unvisited
+  # 2. Needs to be empty or food
+  # 3. Needs to have a neighbour that was visited
   private def are_there_unvisited_points?
       unvisited_points = @vor_grid.flat_map do |row| 
         row.select{ |point|
-          point.unvisited? && (point.empty? || point.food?)
+          point.unvisited? &&
+          (point.empty? || point.food?) &&
+          has_visited_neighbours?(point)
         }
       end
 
       (unvisited_points.size > 0)
+  end
+
+  # Checks if point has at least one visited neighbour
+  private def has_visited_neighbours?(point)
+    res = [{1,0}, {-1,0}, {0,1}, {0,-1}].map do |dx_dy|
+      x = point.x + dx_dy[0]
+      y = point.y + dx_dy[1]
+
+      empty_point?(x, y) && @vor_grid[x][y].visited?
+    end
+
+    res.any?()
   end
 
   # Makes template grid
@@ -192,6 +211,8 @@ class VoronoiPoint
   getter steps : Int32
 
   VISITED = "visited"
+  INTERSECTION = -1
+  NOT_OWNED = -2
 
   def initialize(gp : GridPoint, status : String = "")
     @point = gp
@@ -220,7 +241,7 @@ class VoronoiPoint
     if (content_id >= 0)
       content_id
     else
-      -1
+      NOT_OWNED
     end
   end
 
