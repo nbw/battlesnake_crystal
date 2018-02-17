@@ -36,7 +36,7 @@ class Snake
     id: String,
     length: Int32,
     name: String,
-    taunt: String
+    taunt: { type: String, nilable: true}
   )
 end
  
