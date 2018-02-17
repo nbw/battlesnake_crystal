@@ -1,7 +1,11 @@
 require "kemal"
 require "json"
 require "colorize"
-require "./*"
+require "../battlesnake_crystal/world"
+require "../battlesnake_crystal/grid"
+require "../battlesnake_crystal/voronoi"
+require "../battlesnake_crystal/survival_snake"
+require "../battlesnake_crystal/battlesnake_api"
 
 get "/" do
   "AppColony Battlesnake 2018!"

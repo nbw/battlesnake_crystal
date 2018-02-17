@@ -57,10 +57,8 @@ class Voronoi
   # them if valid
   def flood_point(point : VoronoiPoint)
     [{1,0}, {-1,0}, {0,1}, {0,-1}].each do |dx_dy|
-      dx = dx_dy[0]
-      dy = dx_dy[1]
-      x = point.x + dx
-      y = point.y + dy
+      x = point.x + dx_dy[0]
+      y = point.y + dx_dy[1]
 
       if (empty_point?(x, y))
         possible_point = @vor_grid[x][y]

@@ -12,18 +12,18 @@ class Grid
     generate
   end
 
-  # Generate a grid
-  # 1. create a blank grid
-  # 2. add food to the grid
-  # 3. add snakes to the grid
+  # # Generate a grid
+  # # 1. create a blank grid
+  # # 2. add food to the grid
+  # # 3. add snakes to the grid
   def generate
     make_blank_grid()
     add_food_to_grid()
     add_snakes_to_grid()
-    print
+    # print
   end
 
-  # Print the grid (used for dev purposes)
+  # # Print the grid (used for dev purposes)
   def print
     return if @grid.empty?
 
@@ -60,10 +60,17 @@ class Grid
   end
 
   # %%%%% BEGIN: Accessor methods %%%%%%
-
   # Return the grid
   def grid
     @grid
+  end
+
+  def my_snake
+    @parser.you
+  end
+
+  def my_snake_head
+    @parser.you.body.data.first
   end
 
   def width 
@@ -74,7 +81,7 @@ class Grid
     @parser.height
   end
 
-  # %%%%% END: Accessor methods %%%%%%
+  # # %%%%% END: Accessor methods %%%%%%
 
 
   # Makes template grid
