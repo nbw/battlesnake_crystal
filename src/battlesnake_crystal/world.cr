@@ -10,8 +10,7 @@ class World
   def calculate
     # vor = Voronoi.new(@grid)
     # vor.process
-    # ss = SurvivalSnake.new(@grid)
-    # puts ss.process.inspect
-    "left"
+    ss = SurvivalSnake.new(@grid)
+    ss.process
   end
 end

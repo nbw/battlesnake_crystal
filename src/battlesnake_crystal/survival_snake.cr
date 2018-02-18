@@ -5,46 +5,77 @@ class SurvivalSnake
 
   UP    = {0,-1}
   DOWN  = {0, 1}
-  LEFT  = {1, 0}
-  RIGHT = {-1,0}
+  LEFT = {-1,0}
+  RIGHT  = {1, 0}
+
+  delegate my_snake_head, to: @grid_obj 
 
   def initialize(grid_obj : Grid)
     @grid_obj = grid_obj
   end
 
   def process
-    collect_open_points  
+    open_dir = collect_open_directions  
+
+    puts open_dir.inspect
+
+    # find a point with the least open spaces (or more edges)
+    min_edges = open_dir.min_of?{|d| num_open_edges(d)}
+
+    puts min_edges.inspect
+
+    # find candidate direction based on the min
+    candidate_dirs = open_dir.select{|d| num_open_edges(d) == min_edges}
+
+    puts candidate_dirs.inspect
+
+    # in a specific order, check if candidate is available
+    case
+    when candidate_dirs.includes?(LEFT)
+      "left"
+    when candidate_dirs.includes?(UP)
+      "up"
+    when candidate_dirs.includes?(RIGHT)
+      "right"
+    when candidate_dirs.includes?(DOWN)
+      "down"
+    else
+      puts "[SurvivalSnake]: No candidates!"
+      "left"
+    end
   end
 
   # Returns GridPoints that can be moved into
   # from our snake's head
   #
-  # @return [Array[GridPoint]]
-  def collect_open_points 
-    points = [] of GridPoint
-
-    my_snake_head = @grid_obj.my_snake_head
+  # @return [Array[String]]
+  def collect_open_directions 
+    directions = [] of Tuple(Int32, Int32)
 
     [LEFT, RIGHT, DOWN, UP].each do |dx_dy|
       x = my_snake_head.x + dx_dy[0]
       y = my_snake_head.y + dx_dy[1]
 
       if (@grid_obj.empty_point?(x, y))
-        points << @grid_obj.grid[x][y]
+        directions << dx_dy
       end
     end
 
-    return points
+    return directions
   end
 
   # Checks the number of open spaces around a point
 
-  # @params point [GridPoint]
+  # @params dir [Tuple(Int32, Int32)]
   # @return [Int32]
-  def num_open_edges(point)
+  def num_open_edges(dir)
+    x = my_snake_head.x + dir[0]
+    y = my_snake_head.y + dir[1]
+    point = @grid_obj.grid[x][y]
+
     [LEFT, RIGHT, DOWN, UP].count do |dx_dy|
-      x = point + dx_dy[0]
-      y = point + dx_dy[1]
+      x = point.x + dx_dy[0]
+      y = point.y + dx_dy[1]
 
       @grid_obj.empty_point?(x, y)
     end
