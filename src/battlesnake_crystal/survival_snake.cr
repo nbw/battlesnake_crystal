@@ -17,17 +17,11 @@ class SurvivalSnake
   def process
     open_dir = collect_open_directions  
 
-    puts open_dir.inspect
-
     # find a point with the least open spaces (or more edges)
     min_edges = open_dir.min_of?{|d| num_open_edges(d)}
 
-    puts min_edges.inspect
-
     # find candidate direction based on the min
     candidate_dirs = open_dir.select{|d| num_open_edges(d) == min_edges}
-
-    puts candidate_dirs.inspect
 
     # in a specific order, check if candidate is available
     case
