@@ -6,6 +6,9 @@ require "../battlesnake_crystal/grid"
 require "../battlesnake_crystal/voronoi"
 require "../battlesnake_crystal/survival_snake"
 require "../battlesnake_crystal/battlesnake_api"
+require "../battlesnake_crystal/connected_components"
+
+Kemal.config.port = 3001
 
 get "/" do
   "AppColony Battlesnake 2018!"
@@ -14,6 +17,7 @@ end
 post "/start" do |env|
 	{
 		color: "#123456",
+		secondary_color: "#123456",
     head_url: "https://im-01.gifer.com/6ka.gif",
 		name: "AppColony",
 		taunt: "",

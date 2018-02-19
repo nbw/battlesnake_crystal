@@ -5,6 +5,11 @@ class Voronoi
   delegate height,       to: @grid_obj 
   delegate empty_point?, to: @grid_obj 
 
+  UP    = {0,-1}
+  LEFT  = {-1,0}
+  DOWN  = {0,1}
+  RIGHT = {1,0}
+
   def initialize(grid : Grid)
     @grid_obj    = grid
     @vor_grid    = [] of Array(VoronoiPoint)
@@ -16,7 +21,7 @@ class Voronoi
     make_grid()
     flood_grid()
     calculate_sections()
-    print
+    # print
   end
 
   def calculate_sections
@@ -150,7 +155,7 @@ class Voronoi
 
   # Checks if point has at least one visited neighbour
   private def has_visited_neighbours?(point)
-    res = [{1,0}, {-1,0}, {0,1}, {0,-1}].map do |dx_dy|
+    res = [RIGHT, LEFT, DOWN, UP].map do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
