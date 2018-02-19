@@ -20,7 +20,7 @@ class Grid
     make_blank_grid()
     add_food_to_grid()
     add_snakes_to_grid()
-    print
+    # print
   end
 
   # Print the grid (used for dev purposes)
