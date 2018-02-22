@@ -30,25 +30,46 @@ class ConnectedComponents
     first_pass
     second_pass
     merge
-    puts adjacent_empty_areas(@grid_obj.my_snake_head).inspect
-    print
+    # print
   end
 
-  # Returns the number of connected snakes 
-  #
-  # Look at the total areas of adjacent spots
-  # and if there's an area that's big enough with
-  # just you in it, take it.
-  #
-  # If there's one area:
-  #  - false if another snake is in it
-  #  - true if you're the only one
 
+  # Returns true if my_snake is it it's own area 
+  #
   def survival_mode?
-    true
+    # If solo game, always survival mode
+    return true if (snakes.size <= 1)
+
+    my_snake_adj_components = adjacent_empty_labels(@grid_obj.my_snake_head)
+
+    # Snake should only belong to one area
+    if (my_snake_adj_components.size <= 1)
+      # If it does belong to one area,
+      # check that there aren't any other snakes 
+
+      # Grab all snakes, and remove my snake; remainder are enemy snakes
+      enemy_snakes = snakes.dup 
+      enemy_snakes.delete_at(@grid_obj.my_snake_index)
+
+      # Collect adj components of all enemy snake heads
+      enemy_components = enemy_snakes.flat_map do |snake|
+        head = snake.body.data.first
+        adjacent_empty_labels(head)
+      end.uniq
+
+      # The component my snake occupies
+      my_area = my_snake_adj_components.first
+
+      # Do components occupied by enemy snakes NOT include my
+      # snake?
+      !enemy_components.includes?(my_area)
+    else
+      false
+    end
+
   end
 
-  private def adjacent_empty_areas(point)
+  private def adjacent_empty_labels(point)
     empty_points = [] of ConnCompPoint    
 
     [LEFT, UP, DOWN, RIGHT].each do |dx_dy|
@@ -60,7 +81,7 @@ class ConnectedComponents
       end
     end
 
-    empty_points
+    empty_points.map{|p| p.label}.uniq
   end
 
   private def make_blank_grid

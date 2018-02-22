@@ -73,6 +73,12 @@ class Grid
     @parser.you.body.data.first
   end
 
+  def my_snake_index
+    uniq_id = @parser.you.id
+    index = snakes.index{|s| s.id == uniq_id}
+    Int32.cast(index)
+  end
+
   def snakes
     @parser.snakes.data
   end
