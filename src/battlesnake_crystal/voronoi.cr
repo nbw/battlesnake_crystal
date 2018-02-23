@@ -4,6 +4,12 @@ class Voronoi
   delegate width,        to: @grid_obj 
   delegate height,       to: @grid_obj 
   delegate empty_point?, to: @grid_obj 
+  delegate snake_head?,  to: @grid_obj 
+  delegate snake_body?,  to: @grid_obj 
+
+  getter vor_grid : Array(Array(VoronoiPoint))
+  getter grid_obj : Grid
+  getter sections : Hash(Int32, Int32)
 
   UP    = {0,-1}
   LEFT  = {-1,0}
@@ -20,11 +26,15 @@ class Voronoi
   def process
     make_grid()
     flood_grid()
-    calculate_sections()
+    tally_sections()
     # print
   end
 
-  def calculate_sections
+  def tally_my_section
+    area_of_owner(@grid_obj.my_snake_index)
+  end
+
+  private def tally_sections
     @snake_heads.each do |snake|
       owner_id = snake.owner_id
       @sections[owner_id] = area_of_owner(owner_id)
@@ -34,9 +44,63 @@ class Voronoi
     @sections[-1] = area_of_owner(-1)
   end
 
+
+  # Print the grid (used for dev purposes)
+  def print
+    return if @vor_grid.empty?
+
+    colors = [
+      :light_magenta,
+      :blue,
+      :magenta,
+      :cyan,
+      :green,
+      :red
+    ]
+
+    height.times do |y|
+      str = String.build do |s|
+        width.times do |x|
+
+          point = @vor_grid[x][y]
+          
+          case 
+          when snake_head?(point.point)
+            s << "  @  ".colorize(:yellow)
+          when snake_body?(point.point)
+            s << "  ◦  ".colorize(:yellow)
+          else
+            owner = point.owner_id
+            step = point.steps
+
+            if(point.intersection)
+              color = :white
+            elsif owner < 0
+              color = :black
+            else
+              color = colors[(owner % colors.size)]
+            end
+
+            if step < 10
+              s << "  #{step}  ".colorize(color)
+            else
+              s << " #{step}  ".colorize(color)
+            end
+          end
+        end
+      end
+      puts str
+    end
+  end
+
+   def my_voronoi_snake_head
+    head = @grid_obj.my_snake_head
+    @vor_grid[head.x][head.y]
+  end
+
   # Looks for points with a step value
   # and explores their neighbour points
-  def flood_grid(step : Int32 = 0)
+  private def flood_grid(step : Int32 = 0)
     if (step == 0) 
       points = @snake_heads
     else
@@ -44,7 +108,7 @@ class Voronoi
       # are empty or food. 
       points = @vor_grid.flat_map do |row| 
         row.select{ |point|
-          (point.steps == step) && (point.empty? || point.food?) && !point.intersection
+          (point.steps == step) && (available_point?(point)) && !point.intersection
         }
       end
     end
@@ -60,8 +124,8 @@ class Voronoi
 
   # Check spaces around point and mark
   # them if valid
-  def flood_point(point : VoronoiPoint)
-    [{1,0}, {-1,0}, {0,1}, {0,-1}].each do |dx_dy|
+  private def flood_point(point : VoronoiPoint)
+    [RIGHT, LEFT, DOWN, UP].each do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
@@ -89,54 +153,6 @@ class Voronoi
     end
   end
 
-  # Print the grid (used for dev purposes)
-  def print
-    return if @vor_grid.empty?
-
-    colors = [
-      :light_magenta,
-      :blue,
-      :magenta,
-      :cyan,
-      :green,
-      :red
-    ]
-
-    height.times do |y|
-      str = String.build do |s|
-        width.times do |x|
-
-          point = @vor_grid[x][y]
-          
-          case point.content 
-          when Grid::SNAKE
-            s << "  ◦  ".colorize(:yellow)
-          when Grid::SNAKE_HEAD
-            s << "  @  ".colorize(:yellow)
-          else
-            owner = point.owner_id
-            step = point.steps
-
-            if(point.intersection)
-              color = :white
-            elsif owner < 0
-              color = :black
-            else
-              color = colors[(owner % colors.size)]
-            end
-
-            if step < 10
-              s << "  #{step}  ".colorize(color)
-            else
-              s << " #{step}  ".colorize(color)
-            end
-          end
-        end
-      end
-      puts str
-    end
-  end
-
   # checks if the grid still has unvisited "empty" spots
   # 1. Needs to be unvisited
   # 2. Needs to be empty or food
@@ -145,12 +161,18 @@ class Voronoi
       unvisited_points = @vor_grid.flat_map do |row| 
         row.select{ |point|
           point.unvisited? &&
-          (point.empty? || point.food?) &&
+          available_point?(point) &&
           has_visited_neighbours?(point)
         }
       end
 
       (unvisited_points.size > 0)
+  end
+
+  # Checks if a point is available to move
+  # into.
+  private def available_point?(point : VoronoiPoint)
+    point.empty? || point.food?
   end
 
   # Checks if point has at least one visited neighbour
@@ -178,7 +200,7 @@ class Voronoi
         vol_point = VoronoiPoint.new(gp: gp) 
 
         # keep track of snake heads
-        if (gp.content == Grid::SNAKE_HEAD)
+        if (snake_head?(gp))
           vol_point.owner_id = gp.content_id
           @snake_heads << vol_point
         end
@@ -211,6 +233,7 @@ class VoronoiPoint
 
   property owner_id : Int32
   property intersection : Bool
+  property point : GridPoint
   getter steps : Int32
 
   VISITED = "visited"

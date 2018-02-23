@@ -59,6 +59,14 @@ class Grid
     end
   end
 
+  def snake_head?(point)
+    point.snake_head?
+  end
+
+  def snake_body?(point)
+    point.snake?
+  end
+
   # %%%%% BEGIN: Accessor methods %%%%%%
   # Return the grid
   def grid
@@ -166,5 +174,9 @@ class GridPoint
 
   def snake?
     (content == Grid::SNAKE) || (content == Grid::SNAKE_HEAD)
+  end
+
+  def snake_head?
+    content == Grid::SNAKE_HEAD
   end
 end
