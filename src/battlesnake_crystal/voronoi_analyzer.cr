@@ -17,7 +17,8 @@ class VoronoiAnalyzer
     # @grid.print
 
     # find possible paths, based on result above
-    paths = build_my_paths(degree: 2)
+    search_degree = ENV.fetch("SEARCH_DEGREE", "3").to_i
+    paths = build_my_paths(degree: search_degree)
 
     # find the best path
     ordered_paths = paths.sort_by do |path|
@@ -32,6 +33,8 @@ class VoronoiAnalyzer
   end
 
   def direction_to_path(path)
+    return "up" if (path.size < 2)
+
     point = path[1]
     head = @grid.my_voronoi_snake_head 
 
