@@ -40,7 +40,7 @@ post "/move" do |env|
 
 	{
   	move: move,
-  	taunt: ""
+  	taunt: "vroom-vroom"
 	}.to_json
 end
 

@@ -7,18 +7,27 @@ class VoronoiAnalyzer
   DOWN  = {0,1}
   RIGHT = {1,0}
 
-  def initialize(v : Voronoi)
-    @grid = v
+  def initialize( grid : Grid)
+    @grid = Voronoi.new(grid) 
   end
 
   def process
+    # process base voronoi grid
+    @grid.process
+    # @grid.print
+
+    # find possible paths, based on result above
     paths = build_my_paths(degree: 2)
+
+    # find the best path
     ordered_paths = paths.sort_by do |path|
-      fv = FutureVoronoi.new(grid: @grid.grid_obj, path: path)
+      grid_obj : Grid = @grid.grid_obj.dup
+      fv = FutureVoronoi.new(grid: grid_obj, path: path)
       fv.process
       fv.tally_my_section
     end
 
+    # determine the direction for that path
     direction_to_path(ordered_paths.last)
   end
 

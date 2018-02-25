@@ -1,4 +1,5 @@
 require "../battlesnake_crystal/voronoi"
+require "../battlesnake_crystal/grid"
 
 class FutureVoronoi < Voronoi
   delegate my_snake_index, to: @grid_obj
@@ -6,16 +7,14 @@ class FutureVoronoi < Voronoi
   def initialize(grid : Grid, path : Array(VoronoiPoint))
     @path = [] of VoronoiPoint 
     @path = path
-
+    @path_points = [] of Tuple(Int32,Int32)
+    @path_points = @path.map{|p| {p.x, p.y}}
     super(grid)
   end
 
+  # empty point and not a path point
   def empty_point?(x, y)
-    if(is_path_point?(x, y))
-      false
-    else
-      super(x, y)
-    end
+    !is_path_point?(x, y) && super(x, y)
   end
 
   def my_vornoi_snake_head
@@ -23,10 +22,10 @@ class FutureVoronoi < Voronoi
   end
 
   def snake_head?(point : GridPoint)
-    # if my snake, use @path
-    head = @path.last
-
     if(point.content_id == my_snake_index) 
+      # if my snake, use @path
+      head = @path.last
+
       (head.x == point.x) && (head.y == point.y)
     else
       super(point)
@@ -48,7 +47,6 @@ class FutureVoronoi < Voronoi
   end
 
   def is_path_point?(x : Int32, y : Int32)
-    points = @path.map{|p| {p.x, p.y}}
-    points.includes?({x,y})
+    @path_points.includes?({x, y})
   end
 end

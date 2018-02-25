@@ -1,3 +1,5 @@
+require "../battlesnake_crystal/grid"
+
 class Voronoi
   # Implementation of the Voronoi Heuristic
 
@@ -18,8 +20,8 @@ class Voronoi
 
   def initialize(grid : Grid)
     @grid_obj    = grid
-    @vor_grid    = [] of Array(VoronoiPoint)
-    @snake_heads = [] of VoronoiPoint
+    @vor_grid    = Array(Array(VoronoiPoint)).new(width)
+    @snake_heads = Array(VoronoiPoint).new
     @sections = Hash(Int32, Int32).new
   end
 
@@ -100,31 +102,22 @@ class Voronoi
 
   # Looks for points with a step value
   # and explores their neighbour points
-  private def flood_grid(step : Int32 = 0)
-    if (step == 0) 
-      points = @snake_heads
-    else
-      # Select points with a certain steps value that
-      # are empty or food. 
-      points = @vor_grid.flat_map do |row| 
-        row.select{ |point|
-          (point.steps == step) && (available_point?(point)) && !point.intersection
-        }
-      end
-    end
+  private def flood_grid(step : Int32 = 0, points : Array(VoronoiPoint) = @snake_heads)
+    # if there are no more unvisited neightbouring points, stop
+    return unless points.any?{ |p| has_unvisited_neighbours?(p)}
 
-    points.each do |p|
+    new_points = points.flat_map do |p|
       flood_point(p)
     end
 
-    if (are_there_unvisited_points?)
-      flood_grid(step+1)
-    end
+    flood_grid(step+1, new_points)
   end
 
   # Check spaces around point and mark
   # them if valid
   private def flood_point(point : VoronoiPoint)
+    new_points = [] of VoronoiPoint
+
     [RIGHT, LEFT, DOWN, UP].each do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
@@ -143,49 +136,31 @@ class Voronoi
           )
           possible_point.intersection = true
           possible_point.owner_id = VoronoiPoint::INTERSECTION
-          
+
         # else if the point hasn't been visted, mark it
         elsif(!possible_point.visited?)
           @vor_grid[x][y].mark_visited!(new_step_val, point.owner_id)
+          new_points << possible_point 
         end
       end
-
     end
+
+    new_points
   end
 
-  # checks if the grid still has unvisited "empty" spots
-  # 1. Needs to be unvisited
-  # 2. Needs to be empty or food
-  # 3. Needs to have a neighbour that was visited
-  private def are_there_unvisited_points?
-      unvisited_points = @vor_grid.flat_map do |row| 
-        row.select{ |point|
-          point.unvisited? &&
-          available_point?(point) &&
-          has_visited_neighbours?(point)
-        }
-      end
 
-      (unvisited_points.size > 0)
-  end
-
-  # Checks if a point is available to move
-  # into.
-  private def available_point?(point : VoronoiPoint)
-    point.empty? || point.food?
-  end
-
-  # Checks if point has at least one visited neighbour
-  private def has_visited_neighbours?(point)
+  # Checks if point has any unvisited neighbour points
+  private def has_unvisited_neighbours?(point)
     res = [RIGHT, LEFT, DOWN, UP].map do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
-      empty_point?(x, y) && @vor_grid[x][y].visited?
+      empty_point?(x, y) && @vor_grid[x][y].unvisited?
     end
 
     res.any?()
   end
+
 
   # Makes template grid
   #
@@ -214,11 +189,18 @@ class Voronoi
   # returns the number of points belonging
   # to an owner_id
   private def area_of_owner(owner_id)
-      owners_points = @vor_grid.flat_map do |row| 
-        row.select{|point| point.owner_id == owner_id}
-      end
-
+    owners_points = flattened_grid(@vor_grid).select{|point| point.owner_id == owner_id}
       owners_points.size
+  end
+  
+  private def flattened_grid(grid : Array(Array(VoronoiPoint)))
+      flat_grid = Array(VoronoiPoint).new(width*height)
+      grid.each do |row|
+        row.each do |p|
+          flat_grid << p
+        end
+      end
+      flat_grid
   end
 end
 

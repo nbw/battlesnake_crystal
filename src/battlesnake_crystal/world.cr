@@ -12,9 +12,7 @@ class World
       ss = SurvivalSnake.new(@grid)
       ss.process
     else
-      vor = Voronoi.new(@grid)
-      vor.process
-      va = VoronoiAnalyzer.new(vor)
+      va = VoronoiAnalyzer.new(@grid)
       va.process
     end
   end
