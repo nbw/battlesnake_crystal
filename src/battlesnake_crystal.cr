@@ -1,14 +1,7 @@
 require "kemal"
 require "json"
 require "colorize"
-require "../battlesnake_crystal/world"
-require "../battlesnake_crystal/grid"
-require "../battlesnake_crystal/voronoi"
-require "../battlesnake_crystal/voronoi_analyzer"
-require "../battlesnake_crystal/future_voronoi"
-require "../battlesnake_crystal/survival_snake"
-require "../battlesnake_crystal/battlesnake_api"
-require "../battlesnake_crystal/connected_components"
+require "../manifest"
 
 Kemal.config.port = 3001
 
