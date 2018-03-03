@@ -4,7 +4,7 @@ Tron-style [Battlesnake](https://www.battlesnake.io/) written in [Crystal](https
 
 ![example game](extra/3.gif)
 
-Blue: Crystal snake using Voronoi; Red: Ruby snake using DFS
+***Blue**: Crystal snake using Voronoi; **Red**: Ruby snake using DFS*
 
 # Challenge
 
