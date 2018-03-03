@@ -15,7 +15,7 @@ post "/start" do |env|
     secondary_color: ENV.fetch("SECONDARY_COLOR","#123456"),
     head_url: ENV.fetch("AVATAR", "https://im-01.gifer.com/6ka.gif"),
 		name: "AppColony",
-		taunt: "AppColony",
+    taunt: ENV.fetch("TAUNT", "AppColony "),
 		head_type: "pixel",
 		tail_type: "pixel"
   }.to_json
@@ -33,8 +33,8 @@ post "/move" do |env|
 
 	{
   	move: move,
-  	taunt: "vroom-vroom"
-	}.to_json
+    taunt: Taunts.next(json)
+  }.to_json
 end
 
 Kemal.run
