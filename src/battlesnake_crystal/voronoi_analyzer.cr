@@ -2,10 +2,11 @@ class VoronoiAnalyzer
   # Uses voronoi to minimize enemy snakes'
   # area.
 
-  UP    = {0,-1}
-  LEFT  = {-1,0}
-  DOWN  = {0,1}
-  RIGHT = {1,0}
+  UP    = { 0,-1}
+  LEFT  = {-1, 0}
+  DOWN  = { 0, 1}
+  RIGHT = { 1, 0}
+  DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
 
   def initialize( grid : Grid)
     @grid = Voronoi.new(grid) 
@@ -14,13 +15,12 @@ class VoronoiAnalyzer
   def process
     # process base voronoi grid
     @grid.process
-    # @grid.print
 
     # find possible paths, based on result above
     search_degree = ENV.fetch("SEARCH_DEGREE", "3").to_i
     paths = build_my_paths(degree: search_degree)
 
-    # find the best path
+    # find the best path based on available area
     ordered_paths = paths.sort_by do |path|
       grid_obj : Grid = @grid.grid_obj.dup
       fv = FutureVoronoi.new(grid: grid_obj, path: path)
@@ -28,7 +28,10 @@ class VoronoiAnalyzer
       fv.tally_my_section
     end
 
-    # determine the direction for that path
+    # Use the last path, aka. the one that returns
+    # the biggest "section" for my snake
+    #
+    # Determine the direction for that path
     direction_to_path(ordered_paths.last)
   end
 
@@ -74,21 +77,21 @@ class VoronoiAnalyzer
 
     count += 1
 
+    # Use tail optimized recursion
     build_my_paths(degree: degree, paths: new_paths, count: count)
   end
 
   # Finds any surrounding points with @steps == value
   def surrounding_points(point, value)
-    points = [] of VoronoiPoint
-
-    [LEFT, UP, RIGHT, DOWN].each do |dx_dy|
+    DIRECTIONS.compact_map do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
+
       if (@grid.empty_point?(x, y) && (@grid.vor_grid[x][y].steps == value))
-        points << @grid.vor_grid[x][y]
+        @grid.vor_grid[x][y]
+      else
+        nil
       end
     end
-
-    return points
   end
 end

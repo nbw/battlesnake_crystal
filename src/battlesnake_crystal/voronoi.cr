@@ -13,14 +13,16 @@ class Voronoi
   getter grid_obj : Grid
   getter sections : Hash(Int32, Int32)
 
-  UP    = {0,-1}
-  LEFT  = {-1,0}
-  DOWN  = {0,1}
-  RIGHT = {1,0}
+  UP    = { 0,-1}
+  LEFT  = {-1, 0}
+  DOWN  = { 0, 1}
+  RIGHT = { 1, 0}
+  DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
 
   def initialize(grid : Grid)
     @grid_obj    = grid
     @vor_grid    = Array(Array(VoronoiPoint)).new(width)
+    @flattened_vor_grid = Array(VoronoiPoint).new(width*height)
     @snake_heads = Array(VoronoiPoint).new
     @sections = Hash(Int32, Int32).new
   end
@@ -28,24 +30,12 @@ class Voronoi
   def process
     make_grid()
     flood_grid()
-    tally_sections()
-    # print
+    flatten_grid()
   end
 
   def tally_my_section
     area_of_owner(@grid_obj.my_snake_index)
   end
-
-  private def tally_sections
-    @snake_heads.each do |snake|
-      owner_id = snake.owner_id
-      @sections[owner_id] = area_of_owner(owner_id)
-    end
-
-    # record area of intersection points
-    @sections[-1] = area_of_owner(-1)
-  end
-
 
   # Print the grid (used for dev purposes)
   def print
@@ -118,7 +108,7 @@ class Voronoi
   private def flood_point(point : VoronoiPoint)
     new_points = [] of VoronoiPoint
 
-    [RIGHT, LEFT, DOWN, UP].each do |dx_dy|
+    DIRECTIONS.each do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
@@ -151,7 +141,7 @@ class Voronoi
 
   # Checks if point has any unvisited neighbour points
   private def has_unvisited_neighbours?(point)
-    res = [RIGHT, LEFT, DOWN, UP].map do |dx_dy|
+    res = DIRECTIONS.map do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
@@ -189,18 +179,12 @@ class Voronoi
   # returns the number of points belonging
   # to an owner_id
   private def area_of_owner(owner_id)
-    owners_points = flattened_grid(@vor_grid).select{|point| point.owner_id == owner_id}
+    owners_points = @flattened_vor_grid.select{|point| point.owner_id == owner_id}
       owners_points.size
   end
   
-  private def flattened_grid(grid : Array(Array(VoronoiPoint)))
-      flat_grid = Array(VoronoiPoint).new(width*height)
-      grid.each do |row|
-        row.each do |p|
-          flat_grid << p
-        end
-      end
-      flat_grid
+  private def flatten_grid()
+    @flattened_vor_grid = @vor_grid.flatten
   end
 end
 

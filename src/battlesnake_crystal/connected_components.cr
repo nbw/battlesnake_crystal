@@ -10,10 +10,11 @@ class ConnectedComponents
   delegate grid, to: @grid_obj 
   delegate empty_point?, to: @grid_obj 
 
-  UP    = {0,-1}
-  LEFT  = {-1,0}
-  DOWN  = {0,1}
-  RIGHT = {1,0}
+  UP    = { 0,-1}
+  LEFT  = {-1, 0}
+  DOWN  = { 0, 1}
+  RIGHT = { 1, 0}
+  DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
 
   def initialize(grid_obj : Grid)
     @grid_obj    = grid_obj
@@ -72,7 +73,7 @@ class ConnectedComponents
   private def adjacent_empty_labels(point)
     empty_points = [] of ConnCompPoint    
 
-    [LEFT, UP, DOWN, RIGHT].each do |dx_dy|
+    DIRECTIONS.each do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
     

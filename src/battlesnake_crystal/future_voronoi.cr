@@ -1,12 +1,10 @@
-require "../battlesnake_crystal/voronoi"
-require "../battlesnake_crystal/grid"
-
 class FutureVoronoi < Voronoi
   delegate my_snake_index, to: @grid_obj
 
   def initialize(grid : Grid, path : Array(VoronoiPoint))
     @path = [] of VoronoiPoint 
     @path = path
+
     @path_points = [] of Tuple(Int32,Int32)
     @path_points = @path.map{|p| {p.x, p.y}}
     super(grid)

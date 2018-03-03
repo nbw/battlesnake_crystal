@@ -7,6 +7,7 @@ class SurvivalSnake
   DOWN  = {0, 1}
   LEFT = {-1,0}
   RIGHT  = {1, 0}
+  DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
 
   delegate my_snake_head, to: @grid_obj 
 
@@ -20,7 +21,7 @@ class SurvivalSnake
     # find a point with the least open spaces (or more edges)
     min_edges = open_dir.min_of?{|d| num_open_edges(d)}
 
-    # find candidate direction based on the min
+    # find candidate directions based on the min
     candidate_dirs = open_dir.select{|d| num_open_edges(d) == min_edges}
 
     # in a specific order, check if candidate is available
@@ -46,7 +47,7 @@ class SurvivalSnake
   def collect_open_directions 
     directions = [] of Tuple(Int32, Int32)
 
-    [LEFT, RIGHT, DOWN, UP].each do |dx_dy|
+    DIRECTIONS.each do |dx_dy|
       x = my_snake_head.x + dx_dy[0]
       y = my_snake_head.y + dx_dy[1]
 
@@ -58,8 +59,8 @@ class SurvivalSnake
     return directions
   end
 
-  # Checks the number of open spaces around a point
-
+  # Returns the number of open spaces around a point
+  #
   # @params dir [Tuple(Int32, Int32)]
   # @return [Int32]
   def num_open_edges(dir)
@@ -67,7 +68,7 @@ class SurvivalSnake
     y = my_snake_head.y + dir[1]
     point = @grid_obj.grid[x][y]
 
-    [LEFT, RIGHT, DOWN, UP].count do |dx_dy|
+    DIRECTIONS.count do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 

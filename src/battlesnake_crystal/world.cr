@@ -1,5 +1,3 @@
-# require "grid"
-
 class World
   # Responsible for creating the world and returning a move direction
 
