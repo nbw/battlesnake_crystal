@@ -11,11 +11,11 @@ end
 
 post "/start" do |env|
 	{
-		color: "#123456",
-		secondary_color: "#123456",
-    head_url: "https://im-01.gifer.com/6ka.gif",
+    color: ENV.fetch("COLOR","#123456"),
+    secondary_color: ENV.fetch("SECONDARY_COLOR","#123456"),
+    head_url: ENV.fetch("AVATAR", "https://im-01.gifer.com/6ka.gif"),
 		name: "AppColony",
-		taunt: "",
+		taunt: "AppColony",
 		head_type: "pixel",
 		tail_type: "pixel"
   }.to_json
