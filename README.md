@@ -32,10 +32,10 @@ There are two phases:
 
 The voronoi heuristic is useful for determining _how much area a user controls_. The basic premise is to use a flood fill algorithm (or however you want to do it) to find the minimum distance required for a snake to reach a point on the grid. In the case of two snakes, a border will exist between them (where the snakes reach a point on the grid at the same time).  
 
-Voronoi for two snakes (white is shared distances):
+**Voronoi for two snakes (white is shared distances):**
 ![voronoi color](extra/voronoi_color.png)
 
-Visualization of the area controlled by each snake:
+**Visualization of the area controlled by each snake:**
 ![voronoi area](extra/voronoi_area.png)
 
 ### Using Voronoi
