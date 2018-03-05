@@ -54,6 +54,16 @@ Note: It's worth acknowledging that I'm only accounting for where my snake moves
 
 Survival mode is super simple. Check all the points around my snake's head and go in the direction of the one that has the fewest open spaces next to it. This basically forces the snake to hug it's body and/or hug walls. Code [here](src/battlesnake_crystal/survival_snake.cr).
 
+## Optimizations
+
+* Instead of using a 2-D array ( [] of Array(T)) to represent the grid, I opted for using a 1-D array instead ([] of T). The end result was around a 20-30 percent increase in speed I'd say.
+
+* Reducing iterations over the grid at any point was key. 
+
+* Being conscious of memory allocation and creation of classes with identical states. 
+
+* Reducing intermediary variables while leaving the code relatively verbose.
+ 
 ---
 
 # Usage
