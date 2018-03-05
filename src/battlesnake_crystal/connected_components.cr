@@ -18,12 +18,16 @@ class ConnectedComponents
 
   def initialize(grid_obj : Grid)
     @grid_obj    = grid_obj
-    @cc_grid = [] of Array(ConnCompPoint)
+    @cc_grid = Array(ConnCompPoint).new(width*height)
 
     @label_count = 0
     @merge_ledger = [] of Array(Int32)
 
     make_blank_grid
+  end
+
+  def get_point(x,y)
+    @cc_grid[x + y*width]
   end
 
   def process
@@ -76,9 +80,9 @@ class ConnectedComponents
     DIRECTIONS.each do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
-    
+
       if (empty_point?(x, y))
-        empty_points << @cc_grid[x][y]
+        empty_points << get_point(x,y)
       end
     end
 
@@ -86,34 +90,25 @@ class ConnectedComponents
   end
 
   private def make_blank_grid
-    grid.each do |row|
-      cc_column = [] of ConnCompPoint
-
-      row.each do |gp|
-        cc_point = ConnCompPoint.new(gp) 
-        cc_column << cc_point
-      end
-      @cc_grid << cc_column 
+    grid.each do |gp|
+      cc_point = ConnCompPoint.new(gp) 
+      @cc_grid << cc_point 
     end
   end
 
   # assign values to each square on the grid
   private def first_pass
-    grid.each_with_index do |row, x| 
-      row.each_with_index do |point, y|
-        if point.snake?
-          @cc_grid[x][y].value = 1
-        end
+    grid.each_with_index do |point, index| 
+      if point.snake?
+        @cc_grid[index].value = 1
       end
     end
   end
 
   # assign labels and do some analysis
   private def second_pass
-    @cc_grid.each_with_index do |row, x| 
-      row.each_with_index do |point, y|
-        analyze_point(point)
-      end
+    @cc_grid.each do |point| 
+      analyze_point(point)
     end
   end
 
@@ -123,76 +118,73 @@ class ConnectedComponents
       relation.sort!
       min = relation.shift
       relation.each do |r|
-        @cc_grid.each do |row|
-          row.select{|p| p.label == r}.each do |p|
-            p.label = min
-          end
+        @cc_grid.select{|p| p.label == r}.each do |p|
+          p.label = min
         end
       end
     end
   end
 
   private def one_dir_check(point, dir)
-      side_point = point_at(point, dir) 
+    side_point = point_at(point, dir) 
 
-      if (side_point.value == point.value)
-        point.label = side_point.label
-      else
-        @label_count += 1
-        point.label = @label_count
-      end
+    if (side_point.value == point.value)
+      point.label = side_point.label
+    else
+      @label_count += 1
+      point.label = @label_count
+    end
   end
 
   # https://en.wikipedia.org/wiki/Connected-component_labeling#Two-pass
   private def two_dir_check(point)
-      left  = point_at(point, LEFT) 
-      up    = point_at(point, UP) 
+    left  = point_at(point, LEFT) 
+    up    = point_at(point, UP) 
 
+    if ((left.value == point.value) &&
+        (up.value   == point.value) &&
+        (up.label   != left.label))
 
-      if ((left.value == point.value) &&
-          (up.value   == point.value) &&
-          (up.label   != left.label))
-        
-        @merge_ledger << [left.label, up.label]
-        point.label = [left.label, up.label].min
+      @merge_ledger << [left.label, up.label]
+      point.label = [left.label, up.label].min
 
-      elsif (left.value == point.value)
-        point.label = left.label
+    elsif (left.value == point.value)
+      point.label = left.label
 
-      elsif ((left.value != point.value) &&
-             (up.value   == point.value))
-        point.label = up.label
+    elsif ((left.value != point.value) &&
+           (up.value   == point.value))
+      point.label = up.label
 
-      elsif ((left.value != point.value) &&
-             (up.value   != point.value))
-        @label_count += 1
-        point.label = @label_count
-      end
+    elsif ((left.value != point.value) &&
+           (up.value   != point.value))
+      @label_count += 1
+      point.label = @label_count
+    end
   end
 
   private def analyze_point(point)
     top_row?      = (point.y == 0)
     first_column? = (point.x == 0)
-    
+
     # if top row
     if (top_row?)
       one_dir_check(point, LEFT)
-    
-    # if first column
+
+      # if first column
     elsif (first_column?)
       one_dir_check(point, UP)
 
-    # normal case
+      # normal case
     else
       two_dir_check(point)
     end
-    
+
   end
 
   private def point_at(p, dir)
     x = p.x + dir[0]  
     y = p.y + dir[1]  
-    @cc_grid[x][y]
+    get_point(x,y)
   end
 
 
@@ -212,7 +204,7 @@ class ConnectedComponents
     height.times do |y|
       str = String.build do |s|
         width.times do |x|
-          point = @cc_grid[x][y]
+          point = get_point(x,y)
           val = point.label
 
           color = colors[(val % colors.size)]

@@ -5,7 +5,7 @@ class SurvivalSnake
 
   UP    = {0,-1}
   DOWN  = {0, 1}
-  LEFT = {-1,0}
+  LEFT  = {-1,0}
   RIGHT  = {1, 0}
   DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
 
@@ -51,7 +51,7 @@ class SurvivalSnake
       x = my_snake_head.x + dx_dy[0]
       y = my_snake_head.y + dx_dy[1]
 
-      if (@grid_obj.empty_point?(x, y))
+      if (@grid_obj.empty_point?(x,y))
         directions << dx_dy
       end
     end
@@ -66,13 +66,13 @@ class SurvivalSnake
   def num_open_edges(dir)
     x = my_snake_head.x + dir[0]
     y = my_snake_head.y + dir[1]
-    point = @grid_obj.grid[x][y]
+    point = @grid_obj.get_point(x,y)
 
     DIRECTIONS.count do |dx_dy|
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
-      @grid_obj.empty_point?(x, y)
+      @grid_obj.empty_point?(x,y)
     end
   end
 

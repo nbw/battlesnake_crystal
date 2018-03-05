@@ -11,7 +11,7 @@ end
 
 post "/start" do |env|
 	{
-    color: ENV.fetch("COLOR","#123456"),
+    color: ENV.fetch("COLOR","#00C5E9"),
     secondary_color: ENV.fetch("SECONDARY_COLOR","#123456"),
     head_url: ENV.fetch("AVATAR", "https://im-01.gifer.com/6ka.gif"),
 		name: "AppColony",

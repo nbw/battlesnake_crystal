@@ -87,8 +87,8 @@ class VoronoiAnalyzer
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
-      if (@grid.empty_point?(x, y) && (@grid.vor_grid[x][y].steps == value))
-        @grid.vor_grid[x][y]
+      if (@grid.empty_point?(x, y) && (@grid.get_point(x,y).steps == value))
+        @grid.get_point(x,y)
       else
         nil
       end

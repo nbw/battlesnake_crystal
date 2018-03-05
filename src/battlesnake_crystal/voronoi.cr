@@ -9,7 +9,7 @@ class Voronoi
   delegate snake_head?,  to: @grid_obj 
   delegate snake_body?,  to: @grid_obj 
 
-  getter vor_grid : Array(Array(VoronoiPoint))
+  getter vor_grid : Array(VoronoiPoint)
   getter grid_obj : Grid
   getter sections : Hash(Int32, Int32)
 
@@ -21,16 +21,18 @@ class Voronoi
 
   def initialize(grid : Grid)
     @grid_obj    = grid
-    @vor_grid    = Array(Array(VoronoiPoint)).new(width)
-    @flattened_vor_grid = Array(VoronoiPoint).new(width*height)
+    @vor_grid    = Array(VoronoiPoint).new(width*height)
     @snake_heads = Array(VoronoiPoint).new
     @sections = Hash(Int32, Int32).new
+  end
+
+  def get_point(x,y)
+    @vor_grid[x + y*width]
   end
 
   def process
     make_grid()
     flood_grid()
-    flatten_grid()
   end
 
   def tally_my_section
@@ -54,8 +56,8 @@ class Voronoi
       str = String.build do |s|
         width.times do |x|
 
-          point = @vor_grid[x][y]
-          
+          point = get_point(x,y)
+
           case 
           when snake_head?(point.point)
             s << "  @  ".colorize(:yellow)
@@ -85,9 +87,9 @@ class Voronoi
     end
   end
 
-   def my_voronoi_snake_head
+  def my_voronoi_snake_head
     head = @grid_obj.my_snake_head
-    @vor_grid[head.x][head.y]
+    get_point(head.x,head.y)
   end
 
   # Looks for points with a step value
@@ -112,8 +114,8 @@ class Voronoi
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
-      if (empty_point?(x, y))
-        possible_point = @vor_grid[x][y]
+      if (empty_point?(x,y))
+        possible_point = get_point(x,y)
         new_step_val = point.steps + 1
 
         # if the point has been:
@@ -123,13 +125,13 @@ class Voronoi
         if ( possible_point.visited? &&
             (possible_point.owner_id != point.owner_id) &&
             (possible_point.steps == new_step_val)
-          )
+           )
           possible_point.intersection = true
           possible_point.owner_id = VoronoiPoint::INTERSECTION
 
-        # else if the point hasn't been visted, mark it
+          # else if the point hasn't been visted, mark it
         elsif(!possible_point.visited?)
-          @vor_grid[x][y].mark_visited!(new_step_val, point.owner_id)
+          get_point(x,y).mark_visited!(new_step_val, point.owner_id)
           new_points << possible_point 
         end
       end
@@ -145,7 +147,7 @@ class Voronoi
       x = point.x + dx_dy[0]
       y = point.y + dx_dy[1]
 
-      empty_point?(x, y) && @vor_grid[x][y].unvisited?
+      empty_point?(x,y) && get_point(x,y).unvisited?
     end
 
     res.any?()
@@ -158,33 +160,24 @@ class Voronoi
   private def make_grid
     grid = @grid_obj.grid 
 
-    grid.each do |row|
-      vol_column = [] of VoronoiPoint
+    grid.each do |gp|
+      vol_point = VoronoiPoint.new(gp: gp) 
 
-      row.each do |gp|
-        vol_point = VoronoiPoint.new(gp: gp) 
-
-        # keep track of snake heads
-        if (snake_head?(gp))
-          vol_point.owner_id = gp.content_id
-          @snake_heads << vol_point
-        end
-
-        vol_column << vol_point
+      # keep track of snake heads
+      if (snake_head?(gp))
+        vol_point.owner_id = gp.content_id
+        @snake_heads << vol_point
       end
-      @vor_grid << vol_column 
+
+      @vor_grid <<  vol_point 
     end
   end
 
   # returns the number of points belonging
   # to an owner_id
   private def area_of_owner(owner_id)
-    owners_points = @flattened_vor_grid.select{|point| point.owner_id == owner_id}
-      owners_points.size
-  end
-  
-  private def flatten_grid()
-    @flattened_vor_grid = @vor_grid.flatten
+    owners_points = @vor_grid.select{|point| point.owner_id == owner_id}
+    owners_points.size
   end
 end
 

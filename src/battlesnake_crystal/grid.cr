@@ -7,9 +7,13 @@ class Grid
 
   def initialize(body : String)
     @parser = BattlesnakeAPI.from_json(body)
-    @grid = [] of Array(GridPoint)
+    @grid = Array(GridPoint).new(width*height)
 
     generate
+  end
+
+  def get_point(x,y)
+    @grid[x + y*width]
   end
 
   #  Generate a grid
@@ -20,7 +24,6 @@ class Grid
     make_blank_grid()
     add_food_to_grid()
     add_snakes_to_grid()
-    # print
   end
 
   # Print the grid (used for dev purposes)
@@ -30,7 +33,7 @@ class Grid
     height.times do |y|
       str = String.build do |s|
         width.times do |x|
-          case @grid[x][y].content 
+          case get_point(x,y).content 
           when SNAKE
             s << " ◦ ".colorize(:yellow)
           when SNAKE_HEAD
@@ -52,7 +55,7 @@ class Grid
       false
     when (y < 0), (y > height-1) # check y bounds
       false
-    when (@grid[x][y].content == SNAKE), (@grid[x][y].content == SNAKE_HEAD) # check if snake
+    when (get_point(x,y).content == SNAKE), (get_point(x,y).content == SNAKE_HEAD) # check if snake
       false
     else
       true
@@ -106,26 +109,24 @@ class Grid
   #
   # @return Array[x][y]
   private def make_blank_grid
-    @grid = Array.new(width){
-      Array(GridPoint).new(height){
-        GridPoint.new()
-      }
+    @grid = Array.new(width*height){
+      GridPoint.new()
     }
     add_coords_to_grid()
   end
 
   private def add_coords_to_grid
-    @grid.each_with_index do |row, x_index|
-      row.each_with_index do |point, y_index|
-        @grid[x_index][y_index].set_coord(x_index, y_index)
-      end
+    @grid.each_with_index do |points, index|
+      x_index = index % width
+      y_index = index / width 
+      get_point(x_index,y_index).set_coord(x_index, y_index)
     end
   end
 
   private def add_food_to_grid
     @parser.food.data.each_with_index do |point, i|
-      @grid[point.x][point.y].content = FOOD 
-      @grid[point.x][point.y].content_id = i 
+      get_point(point.x,point.y).content = FOOD 
+      get_point(point.x,point.y).content_id = i 
     end
   end
   
@@ -135,13 +136,13 @@ class Grid
       body = snake.body.data.uniq!{|p| {p.x, p.y}}
 
       body.each do |point|
-        @grid[point.x][point.y].content = SNAKE
-        @grid[point.x][point.y].content_id = i
+        get_point(point.x,point.y).content = SNAKE
+        get_point(point.x,point.y).content_id = i
       end
 
       # mark and record heads
       head = body.first
-      @grid[head.x][head.y].content = SNAKE_HEAD
+      get_point(head.x,head.y).content = SNAKE_HEAD
     end
   end
 end
