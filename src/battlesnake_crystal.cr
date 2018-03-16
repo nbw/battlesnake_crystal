@@ -25,7 +25,7 @@ post "/move" do |env|
   # retrieve json body
   json =  env.request.body.not_nil!.gets_to_end
 
-  # gGridPointenerate world
+  # generate world
   world = World.new(json)
   
   # calculate resulting move
