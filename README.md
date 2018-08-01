@@ -40,15 +40,15 @@ The [voronoi heuristic](https://en.wikipedia.org/wiki/Voronoi_diagram) is useful
 
 ### Using Voronoi
 
-Applying the voronoi heuristic once isn't actually that useful. Here's the recipie for the magic sauce:
+Applying the voronoi heuristic once isn't actually that useful. Here's the recipe for the magic sauce:
 
 1. From the head of my snake, determine all the farthest paths it can take. In practice, there are too many possible paths to compute in a reasonable time. Instead find all paths up to distance X away. In my case, X=3 but can be changed via an environment variable. So to rephrase, **find all paths up to 3 steps away from my snake's head**. 
 
-2. **Reapply the voronoi heuristic for each of the possibe paths that my snake can take (from step 1).**
+2. **Apply the voronoi heuristic for each of the possibe paths that the snake can take (from step 1).**
 
 3. **Choose the path that results with my snake having the most controlled area.**
 
-Note: It's worth acknowledging that I'm only accounting for where my snake moves, without considering the movements of other snakes on the grid. 
+Note: It's worth acknowledging that I'm only accounting for where MY snake moves, without considering the movements of other snakes on the grid. 
 
 ## 2. Survival Mode
 
@@ -56,7 +56,7 @@ Survival mode is super simple. Check all the points around my snake's head and g
 
 ## Optimizations
 
-* Instead of using a 2-D array ( [] of Array(T)) to represent the grid, I opted for using a 1-D array instead ([] of T). The end result was around a 20-30 percent increase in speed I'd say.
+* Instead of using a 2-D array ( [] of Array(T)) to represent the grid, I opted for using a 1-D array instead ([] of T). The end result was around a 20-30 percent-ish increase in speed.
 
 * Reducing iterations over the grid at any point was key. 
 
