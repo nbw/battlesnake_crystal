@@ -81,7 +81,7 @@ class Grid
   end
 
   def my_snake_head
-    @parser.you.body.data.first
+    @parser.you.body.first
   end
 
   def my_snake_index
@@ -91,15 +91,23 @@ class Grid
   end
 
   def snakes
-    @parser.snakes.data
+    @parser.board.snakes
   end
 
   def width 
-    @parser.width
+    @parser.board.width
   end
 
   def height 
-    @parser.height
+    @parser.board.height
+  end
+
+  def food 
+    @parser.board.food
+  end
+
+  def snakes 
+    @parser.board.snakes
   end
 
   # # %%%%% END: Accessor methods %%%%%%
@@ -124,16 +132,16 @@ class Grid
   end
 
   private def add_food_to_grid
-    @parser.food.data.each_with_index do |point, i|
+    food.each_with_index do |point, i|
       get_point(point.x,point.y).content = FOOD 
       get_point(point.x,point.y).content_id = i 
     end
   end
   
   private def add_snakes_to_grid
-    @parser.snakes.data.each_with_index do |snake, i|
+    snakes.each_with_index do |snake, i|
       # retrieve unique parts
-      body = snake.body.data.uniq!{|p| {p.x, p.y}}
+      body = snake.body.uniq!{|p| {p.x, p.y}}
 
       body.each do |point|
         get_point(point.x,point.y).content = SNAKE

@@ -2,17 +2,17 @@ require "json"
 
 class BattlesnakeAPI
   JSON.mapping(
-    width: Int32,
-    height: Int32,
-    food: { type: PointList },
-    you: { type: Snake }, 
-    snakes: { type: SnakeList } 
+    board: {type: Board},
+    you: {type: Snake}
   )
 end
 
-class PointList
+class Board
   JSON.mapping(
-    data: Array(Point)
+    width: Int32,
+    height: Int32,
+    food: Array(Point),
+    snakes: Array(Snake)
   )
 end
 
@@ -23,20 +23,12 @@ class Point
   )
 end
 
-class SnakeList 
-  JSON.mapping(
-    data: Array(Snake)
-  )
-end
-
 class Snake
   JSON.mapping(
-    body: { type: PointList },
+    body: Array(Point),
     health: Int32,
     id: String,
-    length: Int32,
     name: String,
-    taunt: { type: String, nilable: true}
+    taunt: {type: String, nilable: true}
   )
 end
- 

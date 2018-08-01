@@ -6,7 +6,7 @@ require "../manifest"
 Kemal.config.port = 3001
 
 get "/" do
-  "AppColony Battlesnake 2018!"
+  "Crystal Battlesnake 2018!"
 end
 
 post "/start" do |env|
