@@ -8,7 +8,7 @@ targets:
   battlesnake_crystal:
     main: src/battlesnake_crystal.cr
 
-crystal: 0.25.1
+crystal: 0.32.1
 
 license: MIT
 
