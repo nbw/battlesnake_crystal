@@ -1,7 +1,7 @@
 require "kemal"
 require "json"
 require "colorize"
-require "../manifest"
+require "./manifest"
 
 Kemal.config.port = 3001
 
