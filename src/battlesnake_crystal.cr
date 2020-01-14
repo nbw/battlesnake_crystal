@@ -27,7 +27,7 @@ post "/move" do |env|
 
   # generate world
   world = World.new(json)
-  
+
   # calculate resulting move
   move = world.calculate
 

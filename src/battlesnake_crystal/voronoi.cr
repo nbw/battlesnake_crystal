@@ -1,13 +1,13 @@
-require "../battlesnake_crystal/grid"
+require "./grid"
 
 class Voronoi
   # Implementation of the Voronoi Heuristic
 
-  delegate width,        to: @grid_obj 
-  delegate height,       to: @grid_obj 
-  delegate empty_point?, to: @grid_obj 
-  delegate snake_head?,  to: @grid_obj 
-  delegate snake_body?,  to: @grid_obj 
+  delegate width,        to: @grid_obj
+  delegate height,       to: @grid_obj
+  delegate empty_point?, to: @grid_obj
+  delegate snake_head?,  to: @grid_obj
+  delegate snake_body?,  to: @grid_obj
 
   getter vor_grid : Array(VoronoiPoint)
   getter grid_obj : Grid
@@ -58,7 +58,7 @@ class Voronoi
 
           point = get_point(x,y)
 
-          case 
+          case
           when snake_head?(point.point)
             s << "  @  ".colorize(:yellow)
           when snake_body?(point.point)
@@ -121,7 +121,7 @@ class Voronoi
         # if the point has been:
         # 1. visited already
         # 2. visited by a different owner
-        # 3. has the same value 
+        # 3. has the same value
         if ( possible_point.visited? &&
             (possible_point.owner_id != point.owner_id) &&
             (possible_point.steps == new_step_val)
@@ -132,7 +132,7 @@ class Voronoi
           # else if the point hasn't been visted, mark it
         elsif(!possible_point.visited?)
           get_point(x,y).mark_visited!(new_step_val, point.owner_id)
-          new_points << possible_point 
+          new_points << possible_point
         end
       end
     end
@@ -158,10 +158,10 @@ class Voronoi
   #
   # @return Array[x][y]
   private def make_grid
-    grid = @grid_obj.grid 
+    grid = @grid_obj.grid
 
     grid.each do |gp|
-      vol_point = VoronoiPoint.new(gp: gp) 
+      vol_point = VoronoiPoint.new(gp: gp)
 
       # keep track of snake heads
       if (snake_head?(gp))
@@ -169,7 +169,7 @@ class Voronoi
         @snake_heads << vol_point
       end
 
-      @vor_grid <<  vol_point 
+      @vor_grid <<  vol_point
     end
   end
 
@@ -183,12 +183,12 @@ end
 
 
 class VoronoiPoint
-  delegate x, to: @point 
-  delegate y, to: @point 
-  delegate content, to: @point 
-  delegate content_id, to: @point 
-  delegate empty?, to: @point 
-  delegate food?, to: @point 
+  delegate x, to: @point
+  delegate y, to: @point
+  delegate content, to: @point
+  delegate content_id, to: @point
+  delegate empty?, to: @point
+  delegate food?, to: @point
 
   property owner_id : Int32
   property intersection : Bool

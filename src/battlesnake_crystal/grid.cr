@@ -13,7 +13,7 @@ class Grid
   end
 
   def get_point(x,y)
-    @grid[x + y*width]
+    @grid[(x + y*width).to_i]
   end
 
   #  Generate a grid
@@ -33,7 +33,7 @@ class Grid
     height.times do |y|
       str = String.build do |s|
         width.times do |x|
-          case get_point(x,y).content 
+          case get_point(x,y).content
           when SNAKE
             s << " ◦ ".colorize(:yellow)
           when SNAKE_HEAD
@@ -94,19 +94,19 @@ class Grid
     @parser.board.snakes
   end
 
-  def width 
+  def width
     @parser.board.width
   end
 
-  def height 
+  def height
     @parser.board.height
   end
 
-  def food 
+  def food
     @parser.board.food
   end
 
-  def snakes 
+  def snakes
     @parser.board.snakes
   end
 
@@ -126,18 +126,18 @@ class Grid
   private def add_coords_to_grid
     @grid.each_with_index do |points, index|
       x_index = index % width
-      y_index = index / width 
+      y_index = index / width
       get_point(x_index,y_index).set_coord(x_index, y_index)
     end
   end
 
   private def add_food_to_grid
     food.each_with_index do |point, i|
-      get_point(point.x,point.y).content = FOOD 
-      get_point(point.x,point.y).content_id = i 
+      get_point(point.x,point.y).content = FOOD
+      get_point(point.x,point.y).content_id = i
     end
   end
-  
+
   private def add_snakes_to_grid
     snakes.each_with_index do |snake, i|
       # retrieve unique parts
@@ -173,10 +173,15 @@ class GridPoint
     @y = y
   end
 
+  def set_coord(x, y)
+    @x = x.to_i
+    @y = y.to_i
+  end
+
   def empty?
     content == Grid::EMPTY
   end
-  
+
   def food?
     content == Grid::FOOD
   end

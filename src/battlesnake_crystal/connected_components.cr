@@ -157,15 +157,15 @@ class ConnectedComponents
   end
 
   private def analyze_point(point)
-    top_row? = (point.y == 0)
-    first_column? = (point.x == 0)
+    top_row = (point.y == 0)
+    first_column = (point.x == 0)
 
     # if top row
-    if (top_row?)
+    if (top_row)
       one_dir_check(point, LEFT)
 
       # if first column
-    elsif (first_column?)
+    elsif (first_column)
       one_dir_check(point, UP)
 
       # normal case
