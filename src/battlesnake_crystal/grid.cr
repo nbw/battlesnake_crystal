@@ -126,7 +126,8 @@ class Grid
   private def add_coords_to_grid
     @grid.each_with_index do |points, index|
       x_index = index % width
-      y_index = index / width
+      y_index = (index / width).floor
+
       get_point(x_index,y_index).set_coord(x_index, y_index)
     end
   end
